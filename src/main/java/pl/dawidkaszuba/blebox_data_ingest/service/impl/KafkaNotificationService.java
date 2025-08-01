@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
 import pl.dawidkaszuba.blebox_data_ingest.exception.SerializationException;
 import pl.dawidkaszuba.blebox_data_ingest.service.NotificationService;
 
+@Service
 public class KafkaNotificationService implements NotificationService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;

@@ -1,0 +1,5 @@
+metrics:
+  definitions:
+    temperature:
+      scale: 0.01
+      unit: "°C"
