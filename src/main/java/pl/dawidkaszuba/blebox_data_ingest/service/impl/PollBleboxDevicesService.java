@@ -1,8 +1,6 @@
 package pl.dawidkaszuba.blebox_data_ingest.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
@@ -25,14 +23,15 @@ public class PollBleboxDevicesService implements PollDataService {
     private final PayloadNormalizer payloadNormalizer;
     private final WebClient webClient;
     private final NotificationService notificationService;
-    private final ObjectMapper objectMapper;
 
-    public PollBleboxDevicesService(BleBoxConfig bleBoxConfig, PayloadNormalizer payloadNormalizer, WebClient webClient, NotificationService notificationService, ObjectMapper objectMapper) {
+    public PollBleboxDevicesService(BleBoxConfig bleBoxConfig,
+                                    PayloadNormalizer payloadNormalizer,
+                                    WebClient webClient,
+                                    NotificationService notificationService) {
         this.bleBoxConfig = bleBoxConfig;
         this.payloadNormalizer = payloadNormalizer;
         this.webClient = webClient;
         this.notificationService = notificationService;
-        this.objectMapper = objectMapper;
     }
 
     @Override

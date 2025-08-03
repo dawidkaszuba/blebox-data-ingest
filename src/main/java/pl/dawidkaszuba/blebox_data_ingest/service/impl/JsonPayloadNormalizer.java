@@ -1,6 +1,5 @@
 package pl.dawidkaszuba.blebox_data_ingest.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -16,7 +15,7 @@ import java.time.OffsetDateTime;
 @Service
 public class JsonPayloadNormalizer implements PayloadNormalizer {
 
-    private static final String SOURCE_PREFIX = "BleBox: ";
+    private static final String SOURCE_PREFIX = "BleBox";
     private static final String VALUE = "value";
 
     private final ObjectMapper objectMapper;

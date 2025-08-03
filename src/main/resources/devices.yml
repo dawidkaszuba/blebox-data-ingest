@@ -1,11 +1,8 @@
 blebox:
   devices:
     - name: czujnik-kotłownia
-      ip: 10.0.0.101
+      ip: 10.0.0.102
       sensors:
         - path: tempSensor.sensors
-          typeField: type
-          valueField: value
-        - path: humiditySensor.sensors
           typeField: type
           valueField: value
