@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pl.dawidkaszuba.blebox_data_ingest.mapper.DeviceMapper">
+
+
+    <insert id="saveDevice">
+        INSERT INTO devices (
+            de_uid,
+            de_name,
+            de_ip,
+            de_last_seen,
+            de_change_user
+        ) VALUES (
+            #{mac},
+            #{name},
+            #{ip},
+            NOW(),
+            #{changeUser}
+        )
+        ON CONFLICT (de_uid)
+        DO UPDATE SET
+            de_name = EXCLUDED.de_name,
+            de_ip = EXCLUDED.de_ip,
+            de_last_seen = NOW(),
+            de_change_time = NOW(),
+            de_change_user = EXCLUDED.de_change_user
+    </insert>
+
+</mapper>
