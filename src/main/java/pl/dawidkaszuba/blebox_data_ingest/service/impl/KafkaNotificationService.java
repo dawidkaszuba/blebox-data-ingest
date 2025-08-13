@@ -1,12 +1,12 @@
 package pl.dawidkaszuba.blebox_data_ingest.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import pl.dawidkaszuba.blebox_data_ingest.exception.SerializationException;
+import pl.dawidkaszuba.blebox_data_ingest.model.RawDataMessage;
 import pl.dawidkaszuba.blebox_data_ingest.service.NotificationService;
 
 @Service
@@ -25,9 +25,9 @@ public class KafkaNotificationService implements NotificationService {
     }
 
     @Override
-    public void sendRawData(JsonNode normalizedData) {
+    public void sendRawData(RawDataMessage rawDataMessage) {
         try {
-            String json = objectMapper.writeValueAsString(normalizedData);
+            String json = objectMapper.writeValueAsString(rawDataMessage);
             kafkaTemplate.send(rawDataTopicName, json);
         } catch (JsonProcessingException e) {
             throw new SerializationException("Error serialization of JSON message has occurred ", e);

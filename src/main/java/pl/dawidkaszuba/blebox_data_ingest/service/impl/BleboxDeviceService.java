@@ -3,37 +3,33 @@ package pl.dawidkaszuba.blebox_data_ingest.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import pl.dawidkaszuba.blebox_data_ingest.mapper.DeviceMapper;
+import pl.dawidkaszuba.blebox_data_ingest.dao.DeviceDao;
+import pl.dawidkaszuba.blebox_data_ingest.api.BleBoxClient;
 import pl.dawidkaszuba.blebox_data_ingest.model.AddDeviceRequest;
 import pl.dawidkaszuba.blebox_data_ingest.model.BleboxDeviceStatus;
 import pl.dawidkaszuba.blebox_data_ingest.model.BleboxResponse;
 import pl.dawidkaszuba.blebox_data_ingest.service.DeviceService;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Slf4j
 @Service
 public class BleboxDeviceService implements DeviceService {
 
-    private static final String CHANGE_USER = "blebox-app";
-    private final WebClient webClient;
-    private final DeviceMapper deviceMapper;
+    private final BleBoxClient bleBoxClient;
+    private final DeviceDao deviceDao;
 
-    public BleboxDeviceService(WebClient webClient, DeviceMapper deviceMapper) {
-        this.webClient = webClient;
-        this.deviceMapper = deviceMapper;
+    public BleboxDeviceService(BleBoxClient bleBoxClient, DeviceDao deviceDao) {
+        this.bleBoxClient = bleBoxClient;
+        this.deviceDao = deviceDao;
     }
 
     @Override
     public BleboxResponse addDevice(AddDeviceRequest request) {
         try {
 
-            String uid = fetchMacAddressFromBlebox(request.getIp());
-
-            saveDevice(uid, request.getName(), request.getIp());
+            String uid = bleBoxClient.fetchMacAddressFromBlebox(request.getIp());
+            saveDevice(uid, request);
 
             return BleboxResponse.builder()
                     .deviceId(uid)
@@ -55,22 +51,10 @@ public class BleboxDeviceService implements DeviceService {
         }
     }
 
-    private String fetchMacAddressFromBlebox(String ip) {
-        String url = "http://" + ip + "/api/device/network";
 
-        return webClient
-                .get()
-                .uri(url)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .timeout(Duration.ofSeconds(3))
-                .map(body -> (String) body.get("mac"))
-                .block();
 
-    }
-
-    private void saveDevice(String mac, String name, String ip) {
-        deviceMapper.saveDevice(mac, name, ip, CHANGE_USER);
-        log.info("Dodano urządzenie BleBox: ip: {} mac: ({})", ip, mac);
+    private void saveDevice(String mac, AddDeviceRequest request) {
+        deviceDao.saveDeviceWithSensors(mac, request);
+        log.info("Dodano urządzenie BleBox: ip: {} mac: ({})", request.getIp(), mac);
     }
 }

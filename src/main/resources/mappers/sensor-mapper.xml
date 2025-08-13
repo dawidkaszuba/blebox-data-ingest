@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pl.dawidkaszuba.blebox_data_ingest.mapper.SensorMapper">
+
+
+    <insert id="saveSensor">
+        INSERT INTO sensors (
+            de_id,
+            se_type,
+            se_unit,
+            se_change_user
+        ) values (
+            #{deviceId},
+            #{sensor.name},
+            #{sensor.unit},
+            #{changeUser}
+        )
+    </insert>
+
+    <update id="deleteSensor">
+        update sensors
+        set se_delete_time = NOW()
+        where se_id = #{id}
+    </update>
+
+    <select id="findAllActiveSensorsByDeviceId" resultType="pl.dawidkaszuba.blebox_data_ingest.model.SensorConfig">
+        select
+            se_id "id",
+            se_type "name",
+            se_unit "unit"
+        from sensors
+        where de_id = #{deviceId} and se_delete_time is null
+    </select>
+
+
+</mapper>

@@ -1,10 +1,14 @@
 package pl.dawidkaszuba.blebox_data_ingest.mapper;
 
 import org.apache.ibatis.annotations.Param;
+import pl.dawidkaszuba.blebox_data_ingest.model.Device;
+
+import java.util.List;
 
 public interface DeviceMapper {
-    void saveDevice(@Param("mac") String mac,
-                    @Param("name") String deviceName,
-                    @Param("ip") String ip,
-                    @Param("changeUser") String changeUser);
+
+    Device saveDevice(@Param("device") Device device,
+                      @Param("changeUser") String changeUser);
+
+    List<Device> findAllActiveDevicesWithSensors();
 }

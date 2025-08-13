@@ -5,8 +5,7 @@
 
 <mapper namespace="pl.dawidkaszuba.blebox_data_ingest.mapper.DeviceMapper">
 
-
-    <insert id="saveDevice">
+    <select id="saveDevice" parameterType="pl.dawidkaszuba.blebox_data_ingest.model.Device" resultType="pl.dawidkaszuba.blebox_data_ingest.model.Device">
         INSERT INTO devices (
             de_uid,
             de_name,
@@ -14,19 +13,47 @@
             de_last_seen,
             de_change_user
         ) VALUES (
-            #{mac},
-            #{name},
-            #{ip},
+            #{device.macAddress},
+            #{device.name},
+            #{device.ip},
             NOW(),
             #{changeUser}
         )
         ON CONFLICT (de_uid)
         DO UPDATE SET
-            de_name = EXCLUDED.de_name,
-            de_ip = EXCLUDED.de_ip,
-            de_last_seen = NOW(),
-            de_change_time = NOW(),
-            de_change_user = EXCLUDED.de_change_user
-    </insert>
+        de_name = EXCLUDED.de_name,
+        de_ip = EXCLUDED.de_ip,
+        de_last_seen = NOW(),
+        de_change_time = NOW(),
+        de_change_user = EXCLUDED.de_change_user
+        RETURNING de_id "id", de_uid "macAddress", de_name "name", de_ip "ip"
+    </select>
+
+    <resultMap id="deviceWithSensors" type="pl.dawidkaszuba.blebox_data_ingest.model.Device">
+        <id property="id" column="id" />
+        <result property="macAddress" column="macAddress" />
+        <result property="name" column="name" />
+        <result property="ip" column="ip" />
+
+        <collection property="sensors" ofType="pl.dawidkaszuba.blebox_data_ingest.model.SensorReading">
+            <result property="type" column="se_name" />
+            <result property="unit" column="se_unit" />
+        </collection>
+    </resultMap>
+
+
+    <select id="findAllActiveDevicesWithSensors" resultMap="deviceWithSensors">
+        select
+            de.de_id "id",
+            de.de_uid "macAddress",
+            de.de_name "name",
+            de.de_ip "ip",
+            se.se_type "se_name",
+            se.se_unit "se_unit"
+        from devices de
+        join sensors se on de.de_id = se.de_id and se.se_delete_time is null
+        where de_delete_time is null
+    </select>
+
 
 </mapper>
