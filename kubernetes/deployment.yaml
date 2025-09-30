@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blebox-data-ingest
+  labels:
+    app: blebox-data-ingest
+  namespace: iot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blebox-data-ingest
+  template:
+    metadata:
+      labels:
+        app: blebox-data-ingest
+    spec:
+      containers:
+        - name: blebox-data-ingest
+          image: dawidkaszuba/blebox-data-ingest:0.0.1-SNAPSHOT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "10.0.0.110:9092"
+            - name: RAW_DATA_TOPIC_NAME
+              value: "raw-data"

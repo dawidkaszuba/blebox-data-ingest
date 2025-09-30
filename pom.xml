@@ -11,7 +11,7 @@
 	<groupId>pl.dawidkaszuba</groupId>
 	<artifactId>blebox-data-ingest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>blebox-data-ingest</name>
 	<description>Application that ingests data from blebox devices in real time</description>
 	<url/>

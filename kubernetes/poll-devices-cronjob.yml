@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: poll-devices-cronjob
+  namespace: iot
+spec:
+  # "*/5 * * * *" = co 5 minut
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: curl
+              image: curlimages/curl:8.5.0
+              args:
+                - -s
+                - -X
+                - GET
+                - http://blebox-data-ingest:8080/blebox/poll
+          restartPolicy: OnFailure

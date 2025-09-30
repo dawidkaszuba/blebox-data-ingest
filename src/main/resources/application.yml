@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: blebox-data-ingest
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    admin:
+      properties:
+        bootstrap.servers: ${KAFKA_BOOTSTRAP_SERVERS}
+
+data-ingest:
+  kafka:
+    raw-data-topic:
+      name: ${RAW_DATA_TOPIC_NAME}
